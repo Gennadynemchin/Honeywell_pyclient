@@ -13,7 +13,6 @@ parser.add_argument("-p", "--port", type=int, help="Printer port")
 parser.add_argument("-c", "--count", type=int, help="How many codes you are going to print")
 parser.add_argument("-t", "--template", type=str, help="Pathname of template")
 parser.add_argument("-f", "--filename", type=str, help="Pathname of SN's")
-
 args = parser.parse_args()
 
 
