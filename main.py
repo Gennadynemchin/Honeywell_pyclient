@@ -1,5 +1,4 @@
 import argparse
-import telnetlib
 import socket
 import sys
 from time import sleep
@@ -31,8 +30,6 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
         codes_to_print = open(filename, "r")
     except FileNotFoundError:
         print(f'File {filename} does not exist. Check pathname and try again')
-
-
     #open socket connection
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -50,16 +47,9 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
                 template_code = template_gtin.replace("{code}", str(code))
                 template_crypto = template_code.replace("{crypto}", str(crypto))
 
-
-
-
-                if recieve_diagnostic:
-                    s.sendall(template_crypto.encode())
-                    print(f'{template_crypto} sent')
-                else:
-                    print('Something wrong!')
-                    sys.exit()
-                    
+                s.sendall(template_crypto.encode())
+                print(f'{template_crypto} sent, code number {count + 1}')
+                sleep(0.4)
 
                 if count == until_counter - 1:
                     break
@@ -70,20 +60,11 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
     codes_to_print.close()
 
 
-def get_feedback(feedback_ip, feedback_port):
-    # open socket connection
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((feedback_ip, feedback_port))
-            recieve_feedback = s.recv(256)
-            print(recieve_feedback)
-    except Exception:
-        print('Verificator connection has not been established. Abort operation')
-        sys.exit()
-
-
-
 def main():
+
+
+
+
     if None in [args.address, args.port, args.count, args.template, args.filename]:
         address = str(input('Enter IP address: '))
         port = int(input('Enter port: '))
