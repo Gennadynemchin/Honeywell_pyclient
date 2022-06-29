@@ -22,3 +22,4 @@ if __name__ == '__main__':
     while True:
         #print(get_command_port('192.168.78.180', 9301))
         print(get_verify('192.168.78.180', 9302))
+
