@@ -2,6 +2,7 @@ import threading
 import argparse
 import socket
 import sys
+import telnetlib
 from time import sleep
 from get_feedback import get_verify
 
@@ -14,6 +15,12 @@ parser.add_argument("-c", "--count", type=int, help="How many codes you are goin
 parser.add_argument("-t", "--template", type=str, help="Pathname of template")
 parser.add_argument("-f", "--filename", type=str, help="Pathname of SN's")
 args = parser.parse_args()
+
+
+def get_verify(host, port):
+    tn = telnetlib.Telnet(host, port)
+    result = tn.read_until(b'</VerificationReport>')
+    print(result)
 
 
 def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.count, zpl_in=args.template, filename=args.filename):
@@ -63,9 +70,6 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
 
 def main():
 
-
-
-
     if None in [args.address, args.port, args.count, args.template, args.filename]:
         address = str(input('Enter IP address: '))
         port = int(input('Enter port: '))
@@ -78,5 +82,7 @@ def main():
 
 
 if __name__ == '__main__':
-    threading.Thread(target=get_verify, args=('192.168.78.180', 9302))
+    output = threading.Thread(target=get_verify, args=('192.168.78.180', 9302))
+    output.start()
     main()
+
