@@ -1,8 +1,9 @@
+import threading
 import argparse
 import socket
 import sys
 from time import sleep
-
+from get_feedback import get_verify
 
 
 parser = argparse.ArgumentParser()
@@ -77,4 +78,5 @@ def main():
 
 
 if __name__ == '__main__':
+    threading.Thread(target=get_verify, args=('192.168.78.180', 9302))
     main()
