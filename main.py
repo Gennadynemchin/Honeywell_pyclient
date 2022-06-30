@@ -4,7 +4,6 @@ import socket
 import sys
 import telnetlib
 from time import sleep
-from get_feedback import get_verify
 
 
 parser = argparse.ArgumentParser()
@@ -19,8 +18,10 @@ args = parser.parse_args()
 
 def get_verify(host, port):
     tn = telnetlib.Telnet(host, port)
-    result = tn.read_until(b'</VerificationReport>')
-    print(result)
+    result = tn.read_until(b'</VerificationReport\n')
+    reports = open('reports.xml', 'w')
+    reports.write(str(result))
+    return result
 
 
 def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.count, zpl_in=args.template, filename=args.filename):
@@ -59,6 +60,7 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
                 print(f'{template_crypto} sent, code number {count + 1}')
                 sleep(0.4)
 
+
                 if count == until_counter - 1:
                     break
             s.close()
@@ -66,6 +68,7 @@ def send_to_zpl(host_zpl=args.address, port_zpl=args.port, until_counter=args.co
         print('Connection has not been established. Abort operation')
         sys.exit()
     codes_to_print.close()
+
 
 
 def main():
@@ -76,13 +79,12 @@ def main():
         count = int(input('How many codes you are going to print: '))
         template = str(input('Template pathname: '))
         filename = str(input('Codes pathname: '))
+        sleep(1)
         send_to_zpl(address, port, count, template, filename)
     else:
         send_to_zpl()
-
+procs=[]
 
 if __name__ == '__main__':
-    output = threading.Thread(target=get_verify, args=('192.168.78.180', 9302))
-    output.start()
-    main()
-
+    #output = threading.Thread(target=get_verify, args=('192.168.78.180', 9302)).start()
+    input = threading.Thread(target=send_to_zpl, args=('192.168.78.180', 9100, 25, 'zpl.txt', 'sn.csv')).start()

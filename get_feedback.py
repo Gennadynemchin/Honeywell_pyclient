@@ -2,20 +2,17 @@ import telnetlib
 
 
 def get_verify(host, port):
+    results = []
+    reports = open('reports.xml', 'w')
     tn = telnetlib.Telnet(host, port)
-    result = tn.read_until(b'</VerificationReport>')
+    result = tn.interact()
+    if result:
+        results.append(result)
+        reports.write(str(result))
+    reports.close()
     return result
 
 
-def get_command_port(host, port):
-    tn = telnetlib.Telnet(host, port)
-    result = tn.read_until(b'</')
-    print(result)
-    return result
-
-'''
 if __name__ == '__main__':
     while True:
-        #print(get_command_port('192.168.78.180', 9301))
-        print(get_verify('192.168.78.180', 9302))
-'''
+        get_verify('192.168.78.180', 9302)
